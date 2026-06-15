@@ -72,13 +72,17 @@ The forensic "scan" of a meme that types out its anatomy. **Built as a real, reu
 - **A11y:** under `prefers-reduced-motion`, render the final decoded text immediately (no scramble) — this doubles as the low-end-device path. Full text in the container's `aria-label`; animating element is `aria-hidden`. **Never** wrap it in `aria-live` (would announce garbage 60×/sec).
 
 ### 4.2 The scripted demo content
-A single hand-written sample decode that the hero auto-plays. **Constraint (Finn):** scripted strictly around output the **real Phase 2 AI can plausibly produce** — no over-promising to the waitlist. Example shape (final copy TBD during build):
+**2–3 hand-written sample decodes of *different* meme formats** (e.g. a deadpan static-frame reaction, an escalation/bathos cut, a smug walk-away) that the hero **rotates through** — so the demo shows range, not one trick. Each is a separate entry in `lib/decode-script.ts` and the hero cycles them (manual "Try the sample" advances to the next; auto-play rotates on a timer).
+
+**Constraint (Finn):** scripted strictly around output the **real Phase 2 AI can plausibly produce** — and deliberately **under-promised**. In particular, calibrate `WHY IT SPREAD` to the caliber a real LLM vision pass actually delivers: short, grounded, slightly hedged observations ("relatable overconfidence · clean setup→turn"), **not** clairvoyant virality predictions or fake metrics. Better the live product *exceeds* the teaser than disappoints it.
+
+Example shape (final copy TBD during build):
 ```
 [ FORMAT ]        deadpan reaction · static-frame
 [ BEAT ]          setup → hard-cut → bathos
 [ SOUND ]         <trending audio, described generically>
 [ REFERENCE ]     dramatic-zoom archetype
-[ WHY IT SPREAD ] tension/payoff inversion · relatable
+[ WHY IT SPREAD ] relatable overconfidence · the turn lands clean
 ```
 Scene-match line is teased as "matched moment: [locked — join waitlist]" so we don't fake the curated library before it exists.
 
@@ -91,10 +95,19 @@ Scene-match line is teased as "matched moment: [locked — join waitlist]" so we
   2. **Get early access** → waitlist email field.
 - Respects `prefers-reduced-motion` (final state, no auto-motion).
 
-### 4.4 `WaitlistForm` (stub)
+### 4.4 `WaitlistForm` (stub) — **review-only, NOT public-capture-ready**
 - Email input + submit, validates format client-side, posts to a Next route handler `POST /api/waitlist`.
-- **The route handler is a logging stub** — validates and `console.log`s the email, returns success. **No Supabase, no env, no secrets touched.** Real storage is a later, reviewed step with Finn's keys. A `// TODO(phase-7): persist to Supabase` marker is left.
+- **The route handler is a logging stub** — validates and `console.log`s the email, returns success. **No Supabase, no env, no secrets touched.**
+- **Honest limitation (do not skip):** a `console.log` writes to ephemeral process stdout (your dev terminal; or short-lived runtime logs on a deploy). **Logged emails are NOT recoverable as a usable signup list.** This build is for **Finn's review of the brand**, not for publicly collecting real signups.
+- A clearly-marked `// TODO(pre-launch): persist to Supabase — see §4.4 hard gate` marker is left at the exact insertion point.
 - Branded success + error states in product voice ("You're on the list. We'll signal you." / "That email looks scrambled — try again.").
+
+> **HARD GATE — before this landing page goes public to capture real emails:**
+> wire the real, reviewed, **keyed** Supabase storage step. This is a separate step, NOT part of the Phase 0 styling build. It is the **first** thing that touches env/secrets/DB, so:
+> 1. **Flip auto-accept (⏵⏵) OFF** before starting it.
+> 2. Write any DB migration but **do not apply it** — flag for Finn's review.
+> 3. Use Finn's keys via env, never hardcoded.
+> Until this gate is cleared, the page stays review-only.
 
 ### 4.5 `Nav` + shell
 - Minimal top nav: wordmark left; a single muted link or two (e.g. "How it works" anchor) + the waitlist CTA right. Mobile: collapses cleanly.
@@ -114,7 +127,7 @@ Pulled from studio-grade research and **filtered to what survives on a mid-range
 2. **The decode/scramble readout, done right** — direct DOM writes via ref, hex glyph set, dim-noise/bright-resolved, Promise-sequenced one line at a time. *(soulwire TextScramble / use-scramble.)*
 3. **Layered near-black + baked PNG grain + static CSS scanlines** — the whole filmic-terminal surface for ~5KB. *(css-tricks grainy gradients / terminal styling.)*
 4. **CSS-native `view()` scroll reveals** with the studio easing, wrapped in `@supports` + reduced-motion; Framer `useScroll` only where orchestration is needed. *(developer.chrome.com / WebKit scroll-driven animations.)*
-5. **(Optional, desktop-only) spotlight glow + magnetic CTA** via CSS vars, gated behind `@media (hover:hover) and (pointer:fine)` — ~0KB on mobile. *(Frontend Masters CSS spotlight.)*
+5. **(Optional, desktop-only) spotlight glow + magnetic CTA** via CSS vars, gated behind `@media (hover:hover) and (pointer:fine)` — ~0KB on mobile. *(Frontend Masters CSS spotlight.)* **Pure progressive enhancement:** on touch devices the effects simply don't exist — listeners aren't even attached (matchMedia check), and the layout is visually complete without them. There is **no broken or empty state on mobile** — the flourishes are absent, not unfinished. The base design must stand fully on its own; these only layer on for fine-pointer desktop.
 
 **Explicitly AVOIDED / deferred (tank mid-range phones):**
 - Live `feTurbulence` grain / animated `baseFrequency` → **bake to PNG instead.**
@@ -193,6 +206,6 @@ Even though Phase 0 has no clips or AI, these are baked into the foundation now:
 
 ## 10. Definition of done (Phase 0)
 
-A visitor lands on cutscene.io and sees a page that *looks designed by a studio, not generated from a template*: the `CUTSCENE_` forensic-terminal identity, a signature Decode animation auto-playing a Phase-2-plausible sample, two co-equal CTAs (try the sample / join the waitlist), branded empty/loading states, full keyboard + reduced-motion support — fast and flawless on a mid-range phone. The waitlist captures emails to a logging stub (no real storage yet). A clean production build passes. Then we stop and review.
+A visitor lands on the CutScene page and sees something that *looks designed by a studio, not generated from a template*: the `CUTSCENE_` forensic-terminal identity, a signature Decode animation rotating through **2–3 Phase-2-plausible (under-promised) sample decodes** of different formats, two co-equal CTAs (try the sample / join the waitlist), branded empty/loading states, full keyboard + reduced-motion support — fast and flawless on a mid-range phone, with desktop-only pointer flourishes that are cleanly absent (never broken) on touch. The waitlist posts to a **review-only logging stub** (emails not yet recoverable — real keyed storage is a gated pre-launch step, §4.4). A clean production build passes. Then we stop and review.
 
 **Reality check (kept honest):** Phase 0's real deliverable is the **waitlist** and a brand worth signing up for — *not* a finished product. The true go/no-go for building the whole of CutScene remains Phase 7: can a meme channel get traction by hand. The phased plan exists so we can stop cheaply if validation says stop.
