@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* ── The Screening Room — dark editorial / film-house tokens ─────────────── */
+@theme {
+  --color-bg: #14110b;        /* warm near-black */
+  --color-bg-2: #1c1810;      /* lifted panel */
+  --color-ink: #ece3d0;       /* cream */
+  --color-muted: #a89c84;     /* warm muted */
+  --color-faint: #6f6655;     /* faint metadata */
+  --color-gold: #d8a85a;      /* the single accent */
+
+  --ease-cine: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.42, 0, 1, 1);
+}
+
+@theme inline {
+  --font-display: var(--font-zodiak);
+  --font-sans: var(--font-general);
+}
+
+:root {
+  color-scheme: dark;
+  --line: color-mix(in srgb, var(--color-ink) 14%, transparent);
+  --line-gold: color-mix(in srgb, var(--color-gold) 40%, transparent);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "liga", "kern";
+  position: relative;
+}
+
+/* warm vignette + faint film grain over the whole page */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(120% 90% at 50% -10%, #221b10 0%, #14110b 55%),
+    var(--color-bg);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url(/noise.png);
+  background-repeat: repeat;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-gold) 30%, transparent);
+  color: #fff;
+}
+
+/* Eyebrow / kicker — small caps, letterspaced, gold */
+.kicker {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-gold);
+}
+
+/* Animated link underline (sweeps in from left) */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-cine);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Hairline rule */
+.rule {
+  border-top: 1px solid var(--line);
+}
+
+/* Reduced motion — full functionality, motion off */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
