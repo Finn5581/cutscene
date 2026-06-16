@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { isValidEmail } from "@/lib/validation";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -31,71 +32,75 @@ export function WaitlistForm() {
   return (
     <section
       id="waitlist"
-      className="mx-auto w-full max-w-6xl scroll-mt-24 px-6 py-24 sm:px-10"
+      className="mx-auto w-full max-w-6xl scroll-mt-24 px-6 py-28 sm:px-10"
     >
-      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal">
-        [ early access ]
-      </p>
-      <h2
-        className="mt-6 max-w-3xl font-mono font-bold leading-[0.95] tracking-[-0.03em]"
-        style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-90px" }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-2xl"
       >
-        <span className="text-ink">GET IN BEFORE THE </span>
-        <span className="text-signal">LIGHTS</span>
-        <span className="text-ink"> COME UP.</span>
-      </h2>
-      <p className="mt-4 max-w-md text-muted">
-        We&apos;ll signal you when CutScene opens. No spam, just the drop.
-      </p>
+        <p className="kicker">Early access</p>
+        <h2
+          className="mt-6 font-display font-bold leading-[1.02] tracking-[-0.02em] text-ink"
+          style={{ fontSize: "clamp(2.1rem, 5vw, 4rem)" }}
+        >
+          Get in before the lights come up.
+        </h2>
+        <p className="mt-5 max-w-md text-lg text-muted">
+          We&apos;ll signal you when CutScene opens its doors. No spam — just the
+          premiere invite.
+        </p>
 
-      {/* Terminal prompt — the email line reads like a console input, not a boxed form */}
-      <div className="mt-10 max-w-2xl">
         {status === "success" ? (
           <p
             aria-live="polite"
-            className="border border-signal/40 bg-signal/5 px-4 py-5 font-mono text-sm text-signal"
+            className="mt-9 border-l-2 border-[var(--line-gold)] py-1 pl-5 text-lg text-gold"
           >
-            ✓ You&apos;re on the list. We&apos;ll signal you.
+            You&apos;re on the list. We&apos;ll signal you.
           </p>
         ) : (
           <form
             onSubmit={onSubmit}
             noValidate
-            className="flex items-center gap-3 border-b border-white/15 py-3 transition-colors focus-within:border-signal"
+            className="mt-9 flex max-w-xl flex-col gap-4 sm:flex-row sm:items-end"
           >
-            <span aria-hidden className="font-mono text-signal">
-              &gt;
-            </span>
-            <label htmlFor="waitlist-email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="waitlist-email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              placeholder="enter email to join_"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (status === "error") setStatus("idle");
-              }}
-              className="flex-1 bg-transparent font-mono text-ink placeholder:text-muted/50 focus:outline-none"
-            />
+            <div className="flex-1">
+              <label
+                htmlFor="waitlist-email"
+                className="text-[0.64rem] font-medium uppercase tracking-[0.2em] text-muted"
+              >
+                Email
+              </label>
+              <input
+                id="waitlist-email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="you@email.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (status === "error") setStatus("idle");
+                }}
+                className="mt-2 w-full border-b border-[var(--line)] bg-transparent pb-3 text-lg text-ink placeholder:text-faint focus:border-gold focus:outline-none"
+              />
+            </div>
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="term-action px-4 py-2 text-[11px] text-signal disabled:opacity-50"
+              className="rounded-full bg-gold px-7 py-4 text-[15px] font-medium text-[#1a1306] transition-colors hover:bg-[#e6bd72] disabled:opacity-50"
             >
-              {status === "submitting" ? "Sending…" : "Enter"}
+              {status === "submitting" ? "Sending…" : "Request access"}
             </button>
           </form>
         )}
 
-        <p aria-live="polite" className="mt-3 min-h-5 font-mono text-xs text-muted">
-          {status === "error" ? "That email looks scrambled — try again." : ""}
+        <p aria-live="polite" className="mt-3 min-h-5 text-sm text-muted">
+          {status === "error" ? "That email looks off — give it another take." : ""}
         </p>
-      </div>
+      </motion.div>
     </section>
   );
 }

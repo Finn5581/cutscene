@@ -1,23 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { DECODES } from "@/lib/decode-script";
 import { nextIndex } from "@/lib/rotation";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
-import { useSpotlight } from "@/lib/use-spotlight";
-import { revealUp, stagger } from "@/lib/motion";
-import { DecodeMonitor } from "@/components/decode-monitor";
-import type { ReadoutLine } from "@/components/decode-readout";
+import { useMagnetic } from "@/lib/use-magnetic";
+import { ShotBreakdown } from "@/components/shot-breakdown";
 
-const ROTATE_MS = 4600;
+const ROTATE_MS = 5200;
 
 export function Hero() {
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
-  const [replayKey, setReplayKey] = useState(0);
-  const sampleRef = useSpotlight<HTMLButtonElement>();
-  const accessRef = useSpotlight<HTMLButtonElement>();
+  const accessRef = useMagnetic<HTMLAnchorElement>(0.25);
+  const figureRef = useRef<HTMLElement>(null);
+
+  // subtle scroll parallax on the film still (desktop; flattened under reduced motion)
+  const { scrollYProgress } = useScroll({
+    target: figureRef,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [40, -40]);
 
   useEffect(() => {
     if (reduced) return;
@@ -28,109 +32,94 @@ export function Hero() {
     return () => clearInterval(id);
   }, [reduced]);
 
-  const lines = useMemo<ReadoutLine[]>(() => {
-    const d = DECODES[index];
-    return [
-      { label: "FORMAT", value: d.format },
-      { label: "BEAT", value: d.beat },
-      { label: "SOUND", value: d.sound },
-      { label: "REFERENCE", value: d.reference },
-      { label: "WHY IT SPREAD", value: d.whySpread },
-      { label: "MATCHED MOMENT", value: "[ locked — join waitlist ]", kind: "locked" },
-    ];
-  }, [index]);
-
-  const tryTheSample = useCallback(() => {
-    setIndex((i) => nextIndex(i, DECODES.length));
-    setReplayKey((k) => k + 1);
-  }, []);
-
-  const toWaitlist = useCallback(() => {
-    document
-      .getElementById("waitlist")
-      ?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
-    document.getElementById("waitlist-email")?.focus({ preventScroll: true });
-  }, [reduced]);
+  const advance = useCallback(
+    () => setIndex((i) => nextIndex(i, DECODES.length)),
+    [],
+  );
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 pt-10 pb-24 sm:px-10 sm:pt-16">
-      {/* Type-led top: oversized editorial headline */}
-      <motion.div variants={stagger} initial="hidden" animate="show">
-        <motion.p
-          variants={revealUp}
-          className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal"
-        >
-          [ meme intelligence ]
-        </motion.p>
+    <section className="mx-auto w-full max-w-6xl px-6 pb-24 pt-10 sm:px-10 sm:pt-14">
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="kicker"
+      >
+        A CutScene Production — No. 001
+      </motion.p>
 
-        <motion.h1
-          variants={revealUp}
-          className="mt-6 font-mono font-bold leading-[0.92] tracking-[-0.04em]"
-          style={{ fontSize: "clamp(2.75rem, 9vw, 7.5rem)" }}
-        >
-          <span className="block text-ink">READ THE</span>
-          <span className="block">
-            <span className="hollow">MEME&apos;S </span>
-            <span className="text-signal">DNA</span>
-            <span className="caret" aria-hidden />
-          </span>
-        </motion.h1>
-      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
+        className="mt-7 max-w-[16ch] font-display font-bold leading-[0.98] tracking-[-0.02em] text-ink"
+        style={{ fontSize: "clamp(2.6rem, 6.4vw, 6rem)" }}
+      >
+        Every great meme is borrowing a{" "}
+        <span className="text-gold">movie&apos;s timing.</span>
+      </motion.h1>
 
-      {/* Asymmetric lower row: the ask (left) and the proof (right) */}
-      <div className="mt-14 grid items-start gap-x-10 gap-y-10 lg:grid-cols-[5fr_6fr]">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="flex flex-col gap-8"
-        >
-          <motion.p
-            variants={revealUp}
-            className="max-w-md text-lg leading-relaxed text-muted"
-          >
-            Paste a viral meme. CutScene decodes{" "}
-            <span className="text-ink">why</span> it&apos;s funny, writes a fresh line
-            that hits the same beat, and points you to the movie moment whose timing
-            makes it land.
-          </motion.p>
-
-          {/* Two co-equal terminal actions — not pills */}
-          <motion.div variants={revealUp} className="flex flex-col gap-3 sm:flex-row">
-            <button
-              ref={sampleRef}
-              onClick={tryTheSample}
-              className="term-action spotlight relative flex-1 overflow-hidden px-6 py-4 text-xs text-signal"
-            >
-              ▶ Try the sample
-            </button>
-            <button
-              ref={accessRef}
-              onClick={toWaitlist}
-              className="term-action spotlight relative flex-1 overflow-hidden px-6 py-4 text-xs text-signal"
-            >
-              ◈ Get early access
-            </button>
-          </motion.div>
-
-          <p className="font-mono text-[11px] leading-relaxed text-muted/50">
-            No clip hosting. No scraping. Every scene match ships a legal way to
-            produce it.
+      <div className="mt-14 grid items-start gap-x-12 gap-y-12 lg:grid-cols-12">
+        {/* left — the pitch */}
+        <div className="flex flex-col gap-9 lg:col-span-5">
+          <p className="max-w-md text-lg leading-relaxed text-muted">
+            CutScene reads a meme the way a producer reads a rough cut — the format,
+            the beat, the borrowed reference — then finds the exact movie moment that
+            makes your version land.
           </p>
-        </motion.div>
 
-        <motion.div
-          variants={revealUp}
-          initial="hidden"
-          animate="show"
-        >
-          <DecodeMonitor
-            lines={lines}
-            replayKey={replayKey}
-            index={index}
-            total={DECODES.length}
-          />
-        </motion.div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <a
+              ref={accessRef}
+              href="#waitlist"
+              className="rounded-full bg-gold px-7 py-4 text-[15px] font-medium text-[#1a1306] transition-colors hover:bg-[#e6bd72]"
+            >
+              Get early access
+            </a>
+            <button
+              onClick={advance}
+              className="link-underline px-1 py-4 text-[15px] text-ink"
+            >
+              See another breakdown →
+            </button>
+          </div>
+
+          <p className="text-sm leading-relaxed text-faint">
+            Decode · Write · Match. No clip hosting, no scraping — every scene match
+            ships a legal way to produce it.
+          </p>
+        </div>
+
+        {/* right — the proof: a film still + the rotating breakdown */}
+        <div className="flex flex-col gap-6 lg:col-span-7">
+          <motion.figure
+            ref={figureRef}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.15 }}
+            className="group relative aspect-[16/10] overflow-hidden"
+          >
+            <motion.div
+              style={{ y }}
+              className="absolute inset-[-12%] bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.04]"
+            >
+              <div
+                className="h-full w-full"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(180deg, rgba(20,17,11,0.15), rgba(20,17,11,0.75)), linear-gradient(90deg, rgba(40,28,12,0.35), transparent), url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1400&auto=format&fit=crop')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+            </motion.div>
+            <figcaption className="absolute bottom-4 left-5 z-10 text-xs tracking-[0.18em] text-ink/80">
+              <span className="text-gold">●</span>&nbsp; fig. 1 — the held beat, and why it works
+            </figcaption>
+          </motion.figure>
+
+          <ShotBreakdown decode={DECODES[index]} index={index} total={DECODES.length} />
+        </div>
       </div>
     </section>
   );

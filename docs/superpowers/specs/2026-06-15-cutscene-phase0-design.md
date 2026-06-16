@@ -5,6 +5,14 @@
 **Status:** Draft for review
 **Scope:** Phase 0 only (Identity & foundation). Phases 1–7 are out of scope for this spec and get their own spec → plan → build cycle.
 
+> **⚠️ DIRECTION CHANGED (2026-06-15, post-build):** The original "Forensic Terminal"
+> direction below (green-on-black, monospace, scanlines) was scrapped after review — it
+> read as AI-generated. The live build now uses **"The Screening Room"**: dark editorial /
+> film-house (warm black + cream + gold, Zodiak + General Sans, cinematic imagery,
+> interactive). The structure, guardrails, co-equal CTAs, under-promise rule, and
+> review-only waitlist gate all still hold — only the visual skin changed. Treat §3
+> (color/type/texture) as superseded by the Screening Room tokens in `app/globals.css`.
+
 ---
 
 ## 1. What CutScene is (one breath)

@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { revealUp, stagger } from "@/lib/motion";
 
 const STEPS = [
   {
@@ -21,37 +20,52 @@ const STEPS = [
   },
 ];
 
+const item = {
+  hidden: { opacity: 0, y: 22 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
+
 export function HowItWorks() {
   return (
-    <section id="how" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24 sm:px-10">
-      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal">
-        [ how it works ]
-      </p>
+    <section
+      id="how"
+      className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24 sm:px-10"
+    >
+      <p className="kicker">How it works</p>
 
       <motion.ol
-        variants={stagger}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "-90px" }}
+        variants={{ show: { transition: { staggerChildren: 0.12 } } }}
         className="mt-10"
       >
         {STEPS.map((s) => (
           <motion.li
             key={s.n}
-            variants={revealUp}
-            className="rule grid grid-cols-[auto_1fr] items-start gap-x-6 py-8 sm:grid-cols-[7rem_1fr] sm:gap-x-12"
+            variants={item}
+            className="rule grid grid-cols-[auto_1fr] items-start gap-x-7 py-9 sm:grid-cols-[9rem_1fr] sm:gap-x-14"
           >
             <span
-              className="font-mono font-bold leading-none text-signal-dim"
-              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+              className="font-display font-bold leading-none text-gold/85"
+              style={{ fontSize: "clamp(2.6rem, 6vw, 5rem)" }}
             >
               {s.n}
             </span>
             <div className="pt-1 sm:pt-3">
-              <h3 className="font-mono text-xl font-bold text-ink sm:text-2xl">
+              <h3
+                className="font-display font-bold text-ink"
+                style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)" }}
+              >
                 {s.title}
               </h3>
-              <p className="mt-2 max-w-xl leading-relaxed text-muted">{s.body}</p>
+              <p className="mt-3 max-w-xl text-lg leading-relaxed text-muted">
+                {s.body}
+              </p>
             </div>
           </motion.li>
         ))}

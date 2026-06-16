@@ -32,12 +32,19 @@ Regenerate the baked grain texture (rarely needed):
 node scripts/gen-noise.cjs   # writes public/noise.png
 ```
 
-## Design language — "Forensic Terminal"
+## Design language — "The Screening Room" (editorial / film-house)
 
-Near-black (`#070708`), a single phosphor-green accent (`#39ff7a`), JetBrains Mono for
-HUD/headers + Inter for body, baked PNG grain + CSS scanlines. **Mobile-first.** All
-motion animates compositor properties only or bakes to a static asset; everything
-respects `prefers-reduced-motion`. Tokens live in `app/globals.css` (`@theme`).
+Warm near-black (`#14110b`), cream ink (`#ece3d0`), a single gold accent (`#d8a85a`).
+Display type is **Zodiak** (high-contrast Didone) + body **General Sans** — both
+Fontshare faces, self-hosted via `next/font/local` from `app/fonts/` (no AI-default
+Google Fonts: no Inter/Fraunces/Playfair). A24 / Criterion / MUBI register: refined
+serif headlines, real cinematic imagery, magazine restraint, tasteful interactivity
+(scroll parallax, magnetic CTA, animated underlines). **Mobile-first**, everything
+respects `prefers-reduced-motion` and gates pointer effects behind `(hover:hover)`.
+Tokens live in `app/globals.css` (`@theme`).
+
+> Earlier "Forensic Terminal" (green-on-black terminal) direction was scrapped — it
+> read as AI-generated. See `docs/superpowers/specs/` for history.
 
 ## Project layout
 
