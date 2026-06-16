@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { zodiak, generalSans } from "./fonts";
+import { MotionProvider } from "@/components/motion-provider";
 
 export const metadata: Metadata = {
   title: "CutScene — every great meme is borrowing a movie's timing",
@@ -22,7 +23,9 @@ export default function RootLayout({
       lang="en"
       className={`${zodiak.variable} ${generalSans.variable} antialiased`}
     >
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   );
 }

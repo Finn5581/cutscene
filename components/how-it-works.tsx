@@ -23,8 +23,7 @@ const child = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-const FILM_IMG =
-  "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=900&auto=format&fit=crop";
+const FILM_IMG = "/film.jpg";
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
@@ -173,7 +172,8 @@ export function HowItWorks() {
       {/* The Reel — cinematic stage */}
       <div className="mt-12 overflow-hidden border border-[var(--line)] bg-[#0e0b06]">
         <div className="relative min-h-[300px] px-6 py-12 sm:min-h-[340px] sm:px-12">
-          {/* letterbox bars */}
+          {/* cinematic grain + letterbox bars */}
+          <span className="pointer-events-none absolute inset-0 bg-[url('/noise.png')] bg-repeat opacity-[0.05] mix-blend-overlay" />
           <span className="pointer-events-none absolute inset-x-0 top-0 h-5 bg-black/60" />
           <span className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-black/60" />
           <AnimatePresence mode="wait">
@@ -198,7 +198,8 @@ export function HowItWorks() {
               <button
                 key={s.n}
                 onClick={() => setActive(i)}
-                aria-current={on}
+                aria-current={on ? "step" : undefined}
+                aria-label={`${s.title} — step ${s.n}`}
                 className={`relative border-l border-[var(--line)] px-4 py-5 text-left transition-colors first:border-l-0 sm:px-6 ${
                   on ? "bg-bg-2/40" : "hover:bg-bg-2/20"
                 }`}

@@ -97,22 +97,21 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.15 }}
-            className="group relative aspect-[16/10] overflow-hidden"
+            className="group relative aspect-[16/10] overflow-hidden ring-1 ring-[var(--line)]"
           >
+            {/* parallax base: grayscale film still */}
             <motion.div
               style={{ y }}
-              className="absolute inset-[-12%] bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.04]"
-            >
-              <div
-                className="h-full w-full"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(180deg, rgba(20,17,11,0.15), rgba(20,17,11,0.75)), linear-gradient(90deg, rgba(40,28,12,0.35), transparent), url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1400&auto=format&fit=crop')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-            </motion.div>
+              className="absolute inset-[-12%] bg-[url('/film.jpg')] bg-cover bg-center grayscale contrast-125 transition-transform duration-700 group-hover:scale-[1.04]"
+            />
+            {/* gold duotone tint */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#e0b266]/30 to-[#1a1206]/60 mix-blend-multiply" />
+            {/* warm shadow lift so the still reads as a duotone, not a black box */}
+            <div className="absolute inset-0 bg-[#d8a85a]/10 mix-blend-soft-light" />
+            {/* legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#14110b] via-transparent to-transparent" />
+            {/* faint grain over the frame */}
+            <div className="absolute inset-0 bg-[url('/noise.png')] bg-repeat opacity-[0.06] mix-blend-overlay" />
             <figcaption className="absolute bottom-4 left-5 z-10 text-xs tracking-[0.18em] text-ink/80">
               <span className="text-gold">●</span>&nbsp; fig. 1 — the held beat, and why it works
             </figcaption>
