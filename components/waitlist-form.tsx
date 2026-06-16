@@ -9,13 +9,6 @@ export function WaitlistForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
-  const message =
-    status === "success"
-      ? "You're on the list. We'll signal you."
-      : status === "error"
-        ? "That email looks scrambled — try again."
-        : "";
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!isValidEmail(email)) {
@@ -38,30 +31,41 @@ export function WaitlistForm() {
   return (
     <section
       id="waitlist"
-      className="mx-auto w-full max-w-5xl scroll-mt-24 px-5 py-20"
+      className="mx-auto w-full max-w-6xl scroll-mt-24 px-6 py-24 sm:px-10"
     >
-      <div className="rounded-2xl border border-white/10 bg-black/40 p-7 sm:p-10">
-        <p className="hud text-xs text-signal">[ early access ]</p>
-        <h2 className="mt-3 font-mono text-2xl font-bold sm:text-3xl">
-          Get in before the lights come up.
-        </h2>
-        <p className="mt-2 max-w-md text-muted">
-          We&apos;ll signal you when CutScene opens. No spam, just the drop.
-        </p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal">
+        [ early access ]
+      </p>
+      <h2
+        className="mt-6 max-w-3xl font-mono font-bold leading-[0.95] tracking-[-0.03em]"
+        style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
+      >
+        <span className="text-ink">GET IN BEFORE THE </span>
+        <span className="text-signal">LIGHTS</span>
+        <span className="text-ink"> COME UP.</span>
+      </h2>
+      <p className="mt-4 max-w-md text-muted">
+        We&apos;ll signal you when CutScene opens. No spam, just the drop.
+      </p>
 
+      {/* Terminal prompt — the email line reads like a console input, not a boxed form */}
+      <div className="mt-10 max-w-2xl">
         {status === "success" ? (
           <p
             aria-live="polite"
-            className="hud mt-6 text-sm text-signal"
+            className="border border-signal/40 bg-signal/5 px-4 py-5 font-mono text-sm text-signal"
           >
-            ✓ {message}
+            ✓ You&apos;re on the list. We&apos;ll signal you.
           </p>
         ) : (
           <form
             onSubmit={onSubmit}
-            className="mt-6 flex flex-col gap-3 sm:flex-row"
             noValidate
+            className="flex items-center gap-3 border-b border-white/15 py-3 transition-colors focus-within:border-signal"
           >
+            <span aria-hidden className="font-mono text-signal">
+              &gt;
+            </span>
             <label htmlFor="waitlist-email" className="sr-only">
               Email address
             </label>
@@ -70,27 +74,26 @@ export function WaitlistForm() {
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="you@email.com"
+              placeholder="enter email to join_"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
                 if (status === "error") setStatus("idle");
               }}
-              className="flex-1 rounded-lg border border-white/15 bg-black/50 px-4 py-4 font-mono text-ink placeholder:text-muted/60 focus:border-signal"
+              className="flex-1 bg-transparent font-mono text-ink placeholder:text-muted/50 focus:outline-none"
             />
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="hud rounded-lg border border-signal/60 bg-signal/10 px-6 py-4 text-sm text-signal transition-colors hover:bg-signal/20 active:scale-[0.99] disabled:opacity-50"
+              className="term-action px-4 py-2 text-[11px] text-signal disabled:opacity-50"
             >
-              {status === "submitting" ? "Sending…" : "Join waitlist"}
+              {status === "submitting" ? "Sending…" : "Enter"}
             </button>
           </form>
         )}
 
-        {/* Status announced politely; the value scramble is never aria-live. */}
-        <p aria-live="polite" className="mt-3 min-h-5 text-sm text-muted">
-          {status === "error" ? message : ""}
+        <p aria-live="polite" className="mt-3 min-h-5 font-mono text-xs text-muted">
+          {status === "error" ? "That email looks scrambled — try again." : ""}
         </p>
       </div>
     </section>

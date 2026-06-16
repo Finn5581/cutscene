@@ -82,6 +82,37 @@ body {
   }
 }
 
+/* Hollow / outlined type — an editorial device, used on a single word for contrast */
+.hollow {
+  -webkit-text-stroke: 1.25px var(--color-ink);
+  color: transparent;
+}
+@supports not (-webkit-text-stroke: 1px black) {
+  .hollow {
+    color: var(--color-ink);
+  }
+}
+
+/* Hairline rule with optional mono label sitting on it */
+.rule {
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+
+/* Terminal action — bracketed mono, sharp corners (NOT a generic pill) */
+.term-action {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid color-mix(in srgb, var(--color-signal) 45%, transparent);
+  transition:
+    background-color 0.2s var(--ease-enter),
+    color 0.2s var(--ease-enter);
+}
+.term-action:hover {
+  background: var(--color-signal);
+  color: #05140b;
+}
+
 /* Desktop-only cursor spotlight (progressive enhancement; absent on touch) */
 .spotlight::before {
   content: "";

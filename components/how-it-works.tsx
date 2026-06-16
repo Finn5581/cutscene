@@ -12,7 +12,7 @@ const STEPS = [
   {
     n: "02",
     title: "Write the line",
-    body: "Get a fresh caption that hits the same beat, as editable tokens you can remix with a tone dial.",
+    body: "Get a fresh caption that hits the same beat, as editable tokens you remix with a tone dial.",
   },
   {
     n: "03",
@@ -23,27 +23,39 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how" className="mx-auto w-full max-w-5xl scroll-mt-20 px-5 py-16">
-      <p className="hud mb-8 text-xs text-signal">[ how it works ]</p>
-      <motion.div
+    <section id="how" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24 sm:px-10">
+      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal">
+        [ how it works ]
+      </p>
+
+      <motion.ol
         variants={stagger}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-80px" }}
-        className="grid gap-4 sm:grid-cols-3"
+        className="mt-10"
       >
         {STEPS.map((s) => (
-          <motion.div
+          <motion.li
             key={s.n}
             variants={revealUp}
-            className="rounded-xl border border-white/10 bg-black/30 p-6"
+            className="rule grid grid-cols-[auto_1fr] items-start gap-x-6 py-8 sm:grid-cols-[7rem_1fr] sm:gap-x-12"
           >
-            <span className="hud text-xs text-signal-dim">{s.n}</span>
-            <h3 className="mt-3 font-mono text-lg font-bold text-ink">{s.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{s.body}</p>
-          </motion.div>
+            <span
+              className="font-mono font-bold leading-none text-signal-dim"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+            >
+              {s.n}
+            </span>
+            <div className="pt-1 sm:pt-3">
+              <h3 className="font-mono text-xl font-bold text-ink sm:text-2xl">
+                {s.title}
+              </h3>
+              <p className="mt-2 max-w-xl leading-relaxed text-muted">{s.body}</p>
+            </div>
+          </motion.li>
         ))}
-      </motion.div>
+      </motion.ol>
     </section>
   );
 }

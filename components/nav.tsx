@@ -2,24 +2,24 @@
 
 export function Nav() {
   return (
-    <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-5">
+    <header className="relative z-30 mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 sm:px-10">
       <a
         href="#top"
-        className="font-mono text-lg font-bold tracking-tight text-ink"
+        className="font-mono text-base font-bold tracking-tight text-ink"
         aria-label="CutScene home"
       >
         CUTSCENE<span className="text-signal">_</span>
       </a>
-      <nav className="flex items-center gap-5">
+      <nav className="flex items-center gap-6">
         <a
           href="#how"
-          className="hud hidden text-xs text-muted transition-colors hover:text-ink sm:inline"
+          className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-ink sm:inline"
         >
           How it works
         </a>
         <a
           href="#waitlist"
-          className="hud rounded-md border border-signal/50 bg-signal/10 px-3.5 py-2 text-xs text-signal transition-colors hover:bg-signal/20"
+          className="term-action px-3.5 py-2 text-[11px] text-signal"
         >
           Get early access
         </a>
