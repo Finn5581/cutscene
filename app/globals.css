@@ -82,6 +82,27 @@ body {
   }
 }
 
+/* Desktop-only cursor spotlight (progressive enhancement; absent on touch) */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-enter);
+  background: radial-gradient(
+    140px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(57, 255, 122, 0.18),
+    transparent 60%
+  );
+}
+@media (hover: hover) and (pointer: fine) {
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+}
+
 /* Full-functionality-with-motion-off */
 @media (prefers-reduced-motion: reduce) {
   *,

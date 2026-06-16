@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { DECODES } from "@/lib/decode-script";
 import { nextIndex } from "@/lib/rotation";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { useSpotlight } from "@/lib/use-spotlight";
 import { revealUp, stagger } from "@/lib/motion";
 import { DecodeReadout, type ReadoutLine } from "@/components/decode-readout";
 
@@ -14,6 +15,8 @@ export function Hero() {
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [replayKey, setReplayKey] = useState(0);
+  const sampleRef = useSpotlight<HTMLButtonElement>();
+  const accessRef = useSpotlight<HTMLButtonElement>();
 
   // Auto-rotate through the sample decodes — paused under reduced motion.
   useEffect(() => {
@@ -97,14 +100,16 @@ export function Hero() {
           className="flex flex-col gap-3 sm:flex-row sm:gap-4"
         >
           <button
+            ref={sampleRef}
             onClick={tryTheSample}
-            className="hud flex-1 rounded-lg border border-signal/60 bg-signal/10 px-6 py-4 text-sm text-signal transition-colors hover:bg-signal/20 active:scale-[0.99]"
+            className="spotlight hud relative flex-1 overflow-hidden rounded-lg border border-signal/60 bg-signal/10 px-6 py-4 text-sm text-signal transition-colors hover:bg-signal/20 active:scale-[0.99]"
           >
             ▶ Try the sample
           </button>
           <button
+            ref={accessRef}
             onClick={toWaitlist}
-            className="hud flex-1 rounded-lg border border-signal/60 bg-signal/10 px-6 py-4 text-sm text-signal transition-colors hover:bg-signal/20 active:scale-[0.99]"
+            className="spotlight hud relative flex-1 overflow-hidden rounded-lg border border-signal/60 bg-signal/10 px-6 py-4 text-sm text-signal transition-colors hover:bg-signal/20 active:scale-[0.99]"
           >
             ◈ Get early access
           </button>
