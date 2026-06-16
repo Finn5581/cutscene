@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CutScene
 
-## Getting Started
+**X-ray vision for memes.** Paste or upload a viral meme → CutScene decodes *why*
+it's funny, writes a fresh on-beat caption, and recommends the comedic movie moment
+(title + timestamp + the *why*) whose timing makes it land — plus a **legal** way to
+produce it. Not a meme-text stamper; the moat is the decode intelligence + a
+hand-curated library of comedic film moments.
 
-First, run the development server:
+> **Status:** Phase 0 — identity & foundation (landing shell + waitlist). No live AI,
+> auth, billing, or real storage yet. See `docs/superpowers/specs/` and
+> `docs/superpowers/plans/` for the full roadmap.
+
+## Stack
+
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind v4** (CSS-first `@theme` tokens) + **Framer Motion**
+- Self-hosted fonts via `@fontsource` (JetBrains Mono + Inter)
+- **Vitest** + React Testing Library
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm test         # run the unit/component suite
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Regenerate the baked grain texture (rarely needed):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+node scripts/gen-noise.cjs   # writes public/noise.png
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Design language — "Forensic Terminal"
 
-## Learn More
+Near-black (`#070708`), a single phosphor-green accent (`#39ff7a`), JetBrains Mono for
+HUD/headers + Inter for body, baked PNG grain + CSS scanlines. **Mobile-first.** All
+motion animates compositor properties only or bakes to a static asset; everything
+respects `prefers-reduced-motion`. Tokens live in `app/globals.css` (`@theme`).
 
-To learn more about Next.js, take a look at the following resources:
+## Project layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+app/            # layout, landing page, /api/waitlist route
+components/      # nav, hero, decode-readout (signature), waitlist, how-it-works
+lib/            # tested pure logic: scramble engine, decode script, validation…
+scripts/        # gen-noise.cjs (bakes the grain tile)
+docs/           # specs + implementation plans
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⚠️ Non-negotiable guardrails (read before building features)
 
-## Deploy on Vercel
+1. **Never** fetch, host, embed, stream, or download copyrighted video/audio. CutScene
+   *recommends and analyzes* scenes (title + timestamp + text). It never delivers the clip.
+2. **No platform scraping.** Meme ingestion = user upload, official oEmbed/metadata, or
+   manual caption paste. Never bypass auth/rate limits.
+3. The **scene library is metadata only** (title, timestamp, archetype tags, one-line why).
+   No frames, no thumbnails.
+4. Every clip reference ships a risk disclaimer + a **"produce it legally"** recipe.
+5. The waitlist is currently a **review-only logging stub** — it does *not* store emails.
+   Real keyed storage is a gated pre-launch step (see spec §4.4): flip auto-accept off,
+   write the migration without applying it, use env keys.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Workflow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feature branches → PR → review. Never commit build code straight to `main`. Name any new
+dependency before adding it. Don't touch env/secrets/deploy.
