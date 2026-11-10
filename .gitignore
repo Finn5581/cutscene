@@ -1,9 +1,16 @@
-node_modules/
-.next/
-out/
-.superpowers/
-.env*
+# secrets
+.env
+.env.*
 !.env.example
+*.key
+*.pem
+keystore/
+keys/
+# build output and deps
+node_modules/
+out/
+cache/
+lib/
+broadcast/*/31337/
 .DS_Store
-dist/
 *.log

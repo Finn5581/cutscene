@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign transaction</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: Canvas; color: CanvasText; }
+  main { max-width: 480px; margin: 0 auto; padding: 32px 16px; }
+  h1 { font-size: 20px; margin: 0 0 16px; }
+  dl { margin: 0 0 24px; }
+  dt { font-size: 13px; opacity: .7; margin-top: 12px; }
+  dd { margin: 0; word-break: break-all; font-family: ui-monospace, Menlo, monospace; font-size: 14px; }
+  button { width: 100%; min-height: 48px; font: inherit; font-weight: 600; border-radius: 8px; border: 1px solid; background: CanvasText; color: Canvas; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  #status { margin-top: 16px; min-height: 24px; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="summary">Review this transaction</h1>
+  <dl>
+    <dt>Contract</dt><dd id="to"></dd>
+    <dt>You send</dt><dd id="value"></dd>
+    <dt>Network</dt><dd id="chain"></dd>
+  </dl>
+  <button id="go" type="button">Connect wallet and sign</button>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const TOKEN = '__TOKEN__';
+  const CHAIN_ID = Number('__CHAIN_ID__');
+  const $ = (id) => document.getElementById(id);
+  const say = (t) => { $('status').textContent = t; };
+  let tx;
+  try {
+    const raw = location.hash.slice(1).replace(/-/g, '+').replace(/_/g, '/');
+    tx = JSON.parse(atob(raw));
+  } catch { tx = null; }
+
+  // This page only ever sends transactions to the one token contract.
+  const valid = tx && typeof tx.to === 'string' && tx.to.toLowerCase() === TOKEN.toLowerCase()
+    && Number(tx.chainId) === CHAIN_ID && /^0x[0-9a-fA-F]*$/.test(tx.data || '') && /^0x[0-9a-fA-F]+$/.test(tx.value || '');
+  if (!valid) {
+    $('summary').textContent = 'This link is not valid';
+    $('go').disabled = true;
+    say('Ask for a new link and try again.');
+    return;
+  }
+  $('summary').textContent = String(tx.summary || 'Review this transaction');
+  $('to').textContent = tx.to;
+  $('value').textContent = (Number(BigInt(tx.value)) / 1e18) + ' ETH';
+  $('chain').textContent = 'Chain ID ' + CHAIN_ID;
+
+  $('go').addEventListener('click', async () => {
+    const eth = window.ethereum;
+    if (!eth) { say('No wallet found. Open this link in your wallet app\'s browser.'); return; }
+    $('go').disabled = true;
+    try {
+      const [from] = await eth.request({ method: 'eth_requestAccounts' });
+      const want = '0x' + CHAIN_ID.toString(16);
+      if ((await eth.request({ method: 'eth_chainId' })) !== want) {
+        await eth.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: want }] });
+      }
+      say('Check your wallet to confirm.');
+      const hash = await eth.request({ method: 'eth_sendTransaction', params: [{ from, to: tx.to, data: tx.data, value: tx.value }] });
+      say('Sent. Transaction: ' + hash);
+    } catch (e) {
+      say('Not sent: ' + (e && e.message ? e.message : 'cancelled'));
+      $('go').disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
