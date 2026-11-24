@@ -78,3 +78,12 @@ Flow: picking a time creates a **pending visit**, which holds the slot behind a 
 **Recommendation:** build steps 2, 3 and 5 as specified, and replace step 4 with the "captcha fallback" you
 already defined: when a matching slot appears, text and email the person within seconds with the
 deep link to that date, so they complete the booking (and the captcha) themselves.
+
+## Addendum: deep link (verified)
+
+The booking page reads these query parameters:
+- `date=YYYY-MM-DDTHH:mm` preselects that day. A plain `YYYY-MM-DD` is ignored.
+- `name`, `firstname`, `lastname`, `email`, `phone` prefill the form.
+
+Example: `https://waitwhile.com/locations/chromeheartsmiami/time?registration=booking&date=2026-11-27T14:00&firstname=Ana&lastname=Rivera`.
+The `slot-alerts` app uses this for the links in its alerts.

@@ -1,0 +1,30 @@
+{
+  "name": "slot-alerts",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Instant SMS/email alerts when Chrome Hearts Miami Waitwhile appointments open up.",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "dev:worker": "tsx --env-file=.env.local worker/index.ts",
+    "build": "next build",
+    "start": "node scripts/start.mjs",
+    "worker": "tsx worker/index.ts",
+    "simulate": "tsx --env-file-if-exists=.env.local scripts/simulate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "libphonenumber-js": "^1.13.17",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  },
+  "type": "module"
+}
